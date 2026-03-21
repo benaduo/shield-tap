@@ -1,0 +1,55 @@
+[debug] [2026-03-21T14:30:01.860Z] ----------------------------------------------------------------------
+[debug] [2026-03-21T14:30:01.864Z] Command:       /Users/benjaminaduo/.nvm/versions/node/v22.19.0/bin/node /Users/benjaminaduo/.nvm/versions/node/v22.19.0/bin/firebase init hosting
+[debug] [2026-03-21T14:30:01.864Z] CLI Version:   15.11.0
+[debug] [2026-03-21T14:30:01.864Z] Platform:      darwin
+[debug] [2026-03-21T14:30:01.864Z] Node Version:  v22.19.0
+[debug] [2026-03-21T14:30:01.864Z] Time:          Sat Mar 21 2026 14:30:01 GMT+0000 (Greenwich Mean Time)
+[debug] [2026-03-21T14:30:01.864Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /Users/benjaminaduo/Code Projects/shield-tap
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] 
+[info] i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project. 
+[debug] [2026-03-21T14:30:08.656Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-21T14:30:08.657Z] > authorizing via signed-in user (devstar6443@gcplab.me)
+[debug] [2026-03-21T14:30:20.468Z] Checked if tokens are valid: true, expires at: 1774106970511
+[debug] [2026-03-21T14:30:20.470Z] Checked if tokens are valid: true, expires at: 1774106970511
+[debug] [2026-03-21T14:30:20.482Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1/projects:checkProjectId [none]
+[debug] [2026-03-21T14:30:20.483Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"proposedId":"shield-tap"}
+[debug] [2026-03-21T14:30:20.885Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1/projects:checkProjectId 200
+[debug] [2026-03-21T14:30:20.885Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1/projects:checkProjectId {"projectIdStatus":"PROJECT_ID_AVAILABLE","suggestedProjectId":"shield-tap"}
+[debug] [2026-03-21T14:30:28.040Z] Checked if tokens are valid: true, expires at: 1774106970511
+[debug] [2026-03-21T14:30:28.040Z] Checked if tokens are valid: true, expires at: 1774106970511
+[debug] [2026-03-21T14:30:28.041Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects [none]
+[debug] [2026-03-21T14:30:28.041Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"projectId":"shield-tap","name":"shield-tap"}
+[debug] [2026-03-21T14:30:28.924Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects 200
+[debug] [2026-03-21T14:30:28.924Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects {"name":"operations/create_project.global.8809030794689680156"}
+[debug] [2026-03-21T14:30:28.926Z] Checked if tokens are valid: true, expires at: 1774106970511
+[debug] [2026-03-21T14:30:28.926Z] Checked if tokens are valid: true, expires at: 1774106970511
+[debug] [2026-03-21T14:30:28.926Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8809030794689680156 [none]
+[debug] [2026-03-21T14:30:29.512Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8809030794689680156 200
+[debug] [2026-03-21T14:30:29.512Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/operations/create_project.global.8809030794689680156 {"name":"operations/create_project.global.8809030794689680156","metadata":{"@type":"type.googleapis.com/google.cloudresourcemanager.v1.ProjectCreationStatus","ready":true},"done":true,"error":{"code":7,"message":"No permission to create project in organization"}}
+[debug] [2026-03-21T14:30:29.514Z] FirebaseError: No permission to create project in organization
+    at OperationPoller.poll (/Users/benjaminaduo/.nvm/versions/node/v22.19.0/lib/node_modules/firebase-tools/lib/operation-poller.js:25:19)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async createCloudProject (/Users/benjaminaduo/.nvm/versions/node/v22.19.0/lib/node_modules/firebase-tools/lib/management/projects.js:237:29)
+    at async createFirebaseProjectAndLog (/Users/benjaminaduo/.nvm/versions/node/v22.19.0/lib/node_modules/firebase-tools/lib/management/projects.js:102:9)
+    at async Object.doSetup (/Users/benjaminaduo/.nvm/versions/node/v22.19.0/lib/node_modules/firebase-tools/lib/init/features/project.js:64:24)
+    at async init (/Users/benjaminaduo/.nvm/versions/node/v22.19.0/lib/node_modules/firebase-tools/lib/init/index.js:92:13)
+    at async Command.initAction [as actionFn] (/Users/benjaminaduo/.nvm/versions/node/v22.19.0/lib/node_modules/firebase-tools/lib/commands/init.js:231:5)
+[error] 
+[error] Error: Failed to create project. See firebase-debug.log for more info.

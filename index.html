@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>NatWest · NFC Verification</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --natwest: #4F0C37;
+      --natwest-dark: #3a0928;
+      --natwest-light: #f9f0f5;
+      --gold: #C8A96E;
+      --gold-dark: #8B6914;
+      --success: #2E7D32;
+      --success-bg: #E8F5E9;
+      --warning: #D17A00;
+      --warning-bg: #FFF3E0;
+      --text-primary: #1a1d24;
+      --text-secondary: #666;
+      --text-muted: #999;
+      --border: #EDEDED;
+      --surface: #F5F6FA;
+      --white: #ffffff;
+      --font: 'DM Sans', sans-serif;
+      --mono: 'DM Mono', monospace;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      background: #e8e8ec;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Phone shell (desktop) ── */
+    .phone-shell {
+      width: 375px;
+      height: 812px;
+      background: #0E1117;
+      border-radius: 50px;
+      padding: 14px;
+      box-shadow:
+        0 0 0 1px #2a2d38,
+        0 0 0 3px #0E1117,
+        0 40px 80px rgba(0,0,0,0.45);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    /* Side buttons */
+    .phone-shell::before {
+      content: '';
+      position: absolute;
+      left: -3px;
+      top: 120px;
+      width: 3px;
+      height: 36px;
+      background: #2a2d38;
+      border-radius: 2px 0 0 2px;
+      box-shadow: 0 52px 0 #2a2d38, 0 96px 0 #2a2d38;
+    }
+    .phone-shell::after {
+      content: '';
+      position: absolute;
+      right: -3px;
+      top: 160px;
+      width: 3px;
+      height: 56px;
+      background: #2a2d38;
+      border-radius: 0 2px 2px 0;
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 30px;
+      background: #0E1117;
+      border-radius: 0 0 20px 20px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .notch-camera {
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      background: #1a1d24;
+      border: 1.5px solid #2a2d38;
+    }
+
+    .notch-speaker {
+      width: 50px; height: 5px;
+      background: #1a1d24;
+      border-radius: 3px;
+    }
+
+    /* Screen */
+    .phone-screen {
+      background: var(--surface);
+      border-radius: 38px;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ── Mobile full-screen mode ── */
+    @media (max-width: 430px) {
+      html, body {
+        background: var(--surface);
+        align-items: flex-start;
+      }
+      .phone-shell {
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        border-radius: 0;
+        padding: 0;
+        box-shadow: none;
+        background: var(--surface);
+      }
+      .phone-shell::before, .phone-shell::after { display: none; }
+      .phone-notch { display: none; }
+      .phone-screen {
+        border-radius: 0;
+        height: 100%;
+      }
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      background: var(--surface);
+      padding: 48px 20px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 430px) {
+      .status-bar { padding-top: env(safe-area-inset-top, 44px); padding-top: max(44px, env(safe-area-inset-top)); }
+    }
+
+    .status-time {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .status-icons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    /* ── Bank header ── */
+    .bank-header {
+      background: var(--natwest);
+      padding: 14px 20px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .bank-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bank-logo-mark {
+      width: 30px; height: 30px;
+      background: #fff;
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      color: var(--natwest);
+      letter-spacing: -0.5px;
+    }
+
+    .bank-logo-text {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .secure-badge {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.92);
+      font-weight: 500;
+    }
+
+    /* ── Scrollable content ── */
+    .screen-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .screen-scroll::-webkit-scrollbar { display: none; }
+
+    /* ── Views ── */
+    .view {
+      display: none;
+      padding: 0 16px 40px;
+      animation: fadeIn 0.22s ease;
+    }
+
+    .view.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Cards / surfaces ── */
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    /* ── Alert card ── */
+    .alert-header {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .alert-icon-wrap {
+      width: 38px; height: 38px;
+      background: var(--warning-bg);
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .alert-flag {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--warning);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .alert-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .txn-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 11px 13px;
+      margin-bottom: 10px;
+    }
+
+    .txn-merchant { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+    .txn-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .txn-amount { font-size: 16px; font-weight: 600; color: var(--text-primary); font-family: var(--mono); }
+
+    .body-text { font-size: 12.5px; color: var(--text-secondary); line-height: 1.55; }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin: 16px 0 10px;
+    }
+
+    /* ── Step list ── */
+    .step-list { display: flex; flex-direction: column; gap: 0; }
+
+    .step-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .step-track {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .step-num {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .step-num.done   { background: var(--success-bg); color: var(--success); }
+    .step-num.active { background: var(--natwest); color: #fff; }
+    .step-num.idle   { background: #EBEBEB; color: var(--text-muted); }
+
+    .step-line {
+      width: 1.5px;
+      height: 20px;
+      background: #E4E4E4;
+      margin: 3px 0;
+    }
+
+    .step-body {
+      padding-bottom: 16px;
+      flex: 1;
+    }
+
+    .step-title       { font-size: 13.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+    .step-title.idle  { color: #b0b0b0; }
+    .step-desc        { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+    .step-desc.idle   { color: #c4c4c4; }
+
+    /* ── Linked card row ── */
+    .linked-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--white);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+
+    .mini-card {
+      width: 52px; height: 32px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.08);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .chip-small {
+      width: 12px; height: 9px;
+      background: #D4AF37;
+      border-radius: 2px;
+      border: 0.5px solid rgba(0,0,0,0.15);
+    }
+
+    .badge-linked {
+      margin-left: auto;
+      background: var(--success-bg);
+      color: var(--success);
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: 20px;
+      padding: 4px 10px;
+      white-space: nowrap;
+    }
+
+    /* ── NFC Zone ── */
+    .nfc-zone {
+      background: linear-gradient(150deg, #2E0A22 0%, var(--natwest) 100%);
+      border-radius: 18px;
+      padding: 24px 16px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 12px;
+    }
+
+    .nfc-label {
+      font-size: 12.5px;
+      color: rgba(255,255,255,0.72);
+      text-align: center;
+      font-weight: 500;
+    }
+
+    /* Card-to-phone diagram */
+    .tap-diagram {
+      position: relative;
+      width: 160px;
+      height: 110px;
+    }
+
+    .diag-card {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 88px; height: 55px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      border-radius: 8px;
+      border: 1.5px solid rgba(255,255,255,0.18);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .diag-chip {
+      width: 18px; height: 13px;
+      background: #D4AF37;
+      border-radius: 2px;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+
+    .diag-stripes { display: flex; flex-direction: column; gap: 3px; }
+    .diag-stripe  { width: 40px; height: 2px; background: rgba(255,255,255,0.28); border-radius: 1px; }
+    .diag-stripe.short { width: 26px; }
+
+    .diag-phone {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 64px; height: 78px;
+      background: #1a1d24;
+      border-radius: 11px;
+      border: 2px solid #3a3d48;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .diag-screen {
+      width: 48px; height: 58px;
+      background: var(--natwest);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Ripple rings */
+    .ripples {
+      position: absolute;
+      bottom: 78px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 64px;
+      height: 36px;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      0%   { transform: translateX(-50%) scaleX(1)   translateY(0);    opacity: 0.65; }
+      100% { transform: translateX(-50%) scaleX(1.7) translateY(-34px); opacity: 0; }
+    }
+
+    .ripple {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      border: 1.5px solid rgba(255,255,255,0.48);
+      border-radius: 50%;
+      animation: floatUp 1.8s ease-out infinite;
+    }
+
+    .ripple:nth-child(1) { width: 22px; height: 11px; animation-delay: 0s; }
+    .ripple:nth-child(2) { width: 38px; height: 19px; animation-delay: 0.35s; }
+    .ripple:nth-child(3) { width: 56px; height: 28px; animation-delay: 0.7s; }
+
+    /* NFC status */
+    .nfc-status {
+      display: flex; align-items: center; gap: 7px;
+    }
+
+    .nfc-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #4CAF50;
+      flex-shrink: 0;
+    }
+
+    .nfc-dot.waiting { animation: blink 1.3s ease-in-out infinite; }
+    .nfc-dot.detected { background: #4CAF50; animation: none; }
+    .nfc-dot.error    { background: #e53935; animation: none; }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    .nfc-status-text {
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.82);
+      font-weight: 500;
+    }
+
+    /* ── Tips card ── */
+    .tips-card {
+      background: var(--white);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 13px 15px;
+      margin-bottom: 14px;
+    }
+
+    .tips-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .tip-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .tip-row:last-child { margin-bottom: 0; }
+
+    .tip-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--natwest);
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+
+    /* ── Buttons ── */
+    .btn-primary {
+      width: 100%;
+      background: var(--natwest);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 15px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.18s, transform 0.1s;
+      margin-bottom: 10px;
+    }
+
+    .btn-primary:hover  { background: var(--natwest-dark); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { background: #999; cursor: not-allowed; }
+
+    .btn-ghost {
+      width: 100%;
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      padding: 10px;
+      font-size: 13px;
+      font-family: var(--font);
+      cursor: pointer;
+      text-align: center;
+      transition: color 0.18s;
+    }
+
+    .btn-ghost:hover { color: var(--text-secondary); }
+
+    /* ── NFC message ── */
+    #nfc-msg {
+      text-align: center;
+      font-size: 12px;
+      min-height: 18px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    /* ── Success screen ── */
+    .success-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 0 20px;
+      text-align: center;
+    }
+
+    .success-circle {
+      width: 72px; height: 72px;
+      background: var(--success-bg);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .success-title { font-size: 20px; font-weight: 700; color: var(--text-primary); margin-bottom: 5px; }
+    .success-sub   { font-size: 13px; color: var(--text-secondary); line-height: 1.5; max-width: 220px; }
+
+    .receipt-card {
+      background: var(--white);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .receipt-header {
+      background: #F9FBF9;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .receipt-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .badge-approved {
+      background: var(--success-bg);
+      color: var(--success);
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: 20px;
+      padding: 4px 10px;
+    }
+
+    .receipt-body { padding: 14px 16px; }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .receipt-row:last-child { margin-bottom: 0; }
+    .receipt-row-label { color: var(--text-secondary); }
+    .receipt-row-value { font-weight: 500; color: var(--text-primary); }
+    .receipt-row-value.mono { font-family: var(--mono); font-weight: 600; }
+
+    .check-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+
+    .check-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 13px;
+    }
+
+    .check-icon {
+      width: 30px; height: 30px;
+      background: var(--success-bg);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .check-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .check-sub   { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+    /* ── Bottom nav ── */
+    .bottom-nav {
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      padding: 10px 16px max(16px, env(safe-area-inset-bottom));
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .nav-pill {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 8px 6px;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: var(--font);
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.16s;
+    }
+
+    .nav-pill:hover  { border-color: #ccc; color: var(--text-secondary); }
+    .nav-pill.active { background: var(--natwest); border-color: var(--natwest); color: #fff; font-weight: 600; }
+
+    /* ── Header curve ── */
+    .header-curve {
+      height: 14px;
+      background: var(--natwest);
+      position: relative;
+    }
+
+    .header-curve::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 14px;
+      background: var(--surface);
+      border-radius: 14px 14px 0 0;
+    }
+  </style>
+</head>
+<body>
+<div class="phone-shell">
+  <div class="phone-notch">
+    <div class="notch-camera"></div>
+    <div class="notch-speaker"></div>
+    <div class="notch-camera"></div>
+  </div>
+
+  <div class="phone-screen">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <!-- Signal -->
+        <svg width="15" height="11" viewBox="0 0 15 11" fill="var(--text-primary)">
+          <rect x="0" y="5" width="2.5" height="6" rx="1"/>
+          <rect x="3.5" y="3" width="2.5" height="8" rx="1"/>
+          <rect x="7" y="1" width="2.5" height="10" rx="1"/>
+          <rect x="10.5" y="0" width="2.5" height="11" rx="1" opacity="0.3"/>
+        </svg>
+        <!-- Wifi -->
+        <svg width="15" height="11" viewBox="0 0 18 13" fill="none" stroke="var(--text-primary)" stroke-width="1.6" stroke-linecap="round">
+          <path d="M9 10.5h.01M5.5 7.5C6.6 6.4 7.7 5.9 9 5.9s2.4.5 3.5 1.6M2 4.5C4 2.5 6.4 1.5 9 1.5s5 1 7 3"/>
+        </svg>
+        <!-- Battery -->
+        <svg width="24" height="11" viewBox="0 0 26 12" fill="none">
+          <rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="var(--text-primary)" stroke-width="1.2"/>
+          <rect x="2" y="2" width="16" height="8" rx="1.5" fill="var(--text-primary)"/>
+          <rect x="23" y="3.5" width="2.5" height="5" rx="1" fill="var(--text-primary)"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Bank header -->
+    <div class="bank-header">
+      <div class="bank-logo">
+        <div class="bank-logo-mark">NW</div>
+        <span class="bank-logo-text">NatWest</span>
+      </div>
+      <div class="secure-badge">
+        <svg width="10" height="12" viewBox="0 0 12 14" fill="rgba(255,255,255,0.85)">
+          <path d="M6 0L0 2.5v4C0 10.2 3.2 13.2 6 14c2.8-.8 6-3.8 6-7.5v-4L6 0z"/>
+        </svg>
+        Secure
+      </div>
+    </div>
+    <div class="header-curve"></div>
+
+    <!-- Scrollable area -->
+    <div class="screen-scroll">
+
+      <!-- ══ VIEW 1: Transaction Alert ══ -->
+      <div class="view active" id="view-1">
+
+        <div class="section-label">Security alert</div>
+
+        <div class="card">
+          <div class="alert-header">
+            <div class="alert-icon-wrap">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <div>
+              <div class="alert-flag">Verification required</div>
+              <div class="alert-title">High-value transaction detected</div>
+            </div>
+          </div>
+
+          <div class="txn-row">
+            <div>
+              <div class="txn-merchant">Amazon UK</div>
+              <div class="txn-meta">Online purchase · Just now</div>
+            </div>
+            <div class="txn-amount">£849.00</div>
+          </div>
+
+          <p class="body-text">This transaction exceeds your verification threshold. To approve it, confirm your identity using your physical NatWest card via NFC tap.</p>
+        </div>
+
+        <div class="section-label">What you'll need to do</div>
+
+        <div class="step-list">
+          <div class="step-row">
+            <div class="step-track">
+              <div class="step-num active">1</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-body">
+              <div class="step-title">Review this transaction</div>
+              <div class="step-desc">Confirm the amount and merchant look correct</div>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-track">
+              <div class="step-num idle">2</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-body">
+              <div class="step-title idle">Find your NatWest card</div>
+              <div class="step-desc idle">Your physical debit or credit card</div>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-track">
+              <div class="step-num idle">3</div>
+            </div>
+            <div class="step-body">
+              <div class="step-title idle">Tap card to phone</div>
+              <div class="step-desc idle">Hold card to the back of your phone</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="goTo(2)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          Begin verification
+        </button>
+        <button class="btn-ghost" onclick="alert('Transaction declined.')">Decline this transaction</button>
+      </div>
+
+      <!-- ══ VIEW 2: Find card ══ -->
+      <div class="view" id="view-2">
+
+        <div class="section-label">Step 2 of 3</div>
+        <div style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:6px;">Find your NatWest card</div>
+        <p class="body-text" style="margin-bottom:16px;">You'll need the physical card linked to this account. Remove it from your wallet before tapping.</p>
+
+        <div class="linked-card">
+          <div class="mini-card">
+            <div class="chip-small"></div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Personal Current Account</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:1px;">•••• •••• •••• 4821</div>
+          </div>
+          <div class="badge-linked">Linked</div>
+        </div>
+
+        <div class="step-list">
+          <div class="step-row">
+            <div class="step-track">
+              <div class="step-num done">
+                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="var(--success)" stroke-width="2.4" stroke-linecap="round"><polyline points="2,6.5 5.5,10 11,3"/></svg>
+              </div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-body">
+              <div class="step-title">Transaction reviewed</div>
+              <div class="step-desc">Amazon UK · £849.00</div>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-track">
+              <div class="step-num active">2</div>
+              <div class="step-line"></div>
+            </div>
+            <div class="step-body">
+              <div class="step-title">Find your card</div>
+              <div class="step-desc">Have it out and ready to tap</div>
+            </div>
+          </div>
+          <div class="step-row">
+            <div class="step-track">
+              <div class="step-num idle">3</div>
+            </div>
+            <div class="step-body">
+              <div class="step-title idle">Tap card to phone</div>
+              <div class="step-desc idle">Hold card flat to the back of your phone</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="goTo(3)">I have my card ready →</button>
+        <button class="btn-ghost" onclick="goTo(1)">← Back</button>
+      </div>
+
+      <!-- ══ VIEW 3: NFC Tap ══ -->
+      <div class="view" id="view-3">
+
+        <div class="section-label">Step 3 of 3</div>
+        <div style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:6px;">Tap your card to your phone</div>
+        <p class="body-text" style="margin-bottom:14px;">Hold your card flat against the back of your phone near the top edge.</p>
+
+        <div class="nfc-zone">
+          <div class="nfc-label">Hold card flat against the back of your phone</div>
+
+          <div class="tap-diagram">
+            <div class="diag-card">
+              <div class="diag-chip"></div>
+              <div class="diag-stripes">
+                <div class="diag-stripe"></div>
+                <div class="diag-stripe short"></div>
+              </div>
+            </div>
+            <div class="ripples">
+              <div class="ripple"></div>
+              <div class="ripple"></div>
+              <div class="ripple"></div>
+            </div>
+            <div class="diag-phone">
+              <div class="diag-screen">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="nfc-status">
+            <div class="nfc-dot waiting" id="nfc-dot"></div>
+            <div class="nfc-status-text" id="nfc-status-text">NFC reader active · Waiting for card…</div>
+          </div>
+        </div>
+
+        <div class="tips-card">
+          <div class="tips-title">Tips for a successful tap</div>
+          <div class="tip-row"><div class="tip-dot"></div>Remove card from wallet or leather case</div>
+          <div class="tip-row"><div class="tip-dot"></div>Hold it flat — don't swipe or press hard</div>
+          <div class="tip-row"><div class="tip-dot"></div>Top half of phone works best for NFC</div>
+          <div class="tip-row"><div class="tip-dot"></div>Keep card still for 1–2 seconds</div>
+        </div>
+
+        <p id="nfc-msg" style="color:var(--text-secondary);"></p>
+
+        <button class="btn-primary" id="nfc-btn" onclick="startNFC()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+          </svg>
+          Start NFC scan
+        </button>
+        <button class="btn-ghost" onclick="goTo(2)">← Back</button>
+      </div>
+
+      <!-- ══ VIEW 4: Verified ══ -->
+      <div class="view" id="view-4">
+
+        <div class="success-hero">
+          <div class="success-circle">
+            <svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="var(--success)" stroke-width="2.8" stroke-linecap="round">
+              <polyline points="6,17 13.5,24.5 28,9"/>
+            </svg>
+          </div>
+          <div class="success-title">Identity verified</div>
+          <p class="success-sub">Your card was recognised. The transaction has been approved.</p>
+        </div>
+
+        <div class="receipt-card">
+          <div class="receipt-header">
+            <span class="receipt-label">Transaction approved</span>
+            <span class="badge-approved">Approved</span>
+          </div>
+          <div class="receipt-body">
+            <div class="receipt-row">
+              <span class="receipt-row-label">Merchant</span>
+              <span class="receipt-row-value">Amazon UK</span>
+            </div>
+            <div class="receipt-row">
+              <span class="receipt-row-label">Amount</span>
+              <span class="receipt-row-value mono">£849.00</span>
+            </div>
+            <div class="receipt-row">
+              <span class="receipt-row-label">Verified via</span>
+              <span class="receipt-row-value">NFC Card Tap</span>
+            </div>
+            <div class="receipt-row">
+              <span class="receipt-row-label">Card</span>
+              <span class="receipt-row-value">•••• 4821</span>
+            </div>
+            <div class="receipt-row">
+              <span class="receipt-row-label">Time</span>
+              <span class="receipt-row-value" style="color:var(--text-muted);font-weight:400;" id="txn-time">09:41 · Today</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="check-rows">
+          <div class="check-row">
+            <div class="check-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--success)" stroke-width="2.4" stroke-linecap="round"><polyline points="2,7 5.5,10.5 12,3"/></svg>
+            </div>
+            <div>
+              <div class="check-title">Card chip verified</div>
+              <div class="check-sub">Cryptographic NFC read successful</div>
+            </div>
+          </div>
+          <div class="check-row">
+            <div class="check-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--success)" stroke-width="2.4" stroke-linecap="round"><polyline points="2,7 5.5,10.5 12,3"/></svg>
+            </div>
+            <div>
+              <div class="check-title">Account matched</div>
+              <div class="check-sub">Card linked to this account</div>
+            </div>
+          </div>
+          <div class="check-row">
+            <div class="check-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--success)" stroke-width="2.4" stroke-linecap="round"><polyline points="2,7 5.5,10.5 12,3"/></svg>
+            </div>
+            <div>
+              <div class="check-title">Deepfake risk eliminated</div>
+              <div class="check-sub">Physical possession confirmed</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="goTo(1)">Back to account</button>
+      </div>
+
+    </div><!-- end scroll -->
+
+    <!-- Bottom nav -->
+    <div class="bottom-nav">
+      <button class="nav-pill active" id="pill-1" onclick="goTo(1)">Alert</button>
+      <button class="nav-pill"        id="pill-2" onclick="goTo(2)">Find card</button>
+      <button class="nav-pill"        id="pill-3" onclick="goTo(3)">Tap</button>
+      <button class="nav-pill"        id="pill-4" onclick="goTo(4)">Verified</button>
+    </div>
+
+  </div><!-- end phone-screen -->
+</div><!-- end phone-shell -->
+
+<script>
+  // ── View navigation ──
+  function goTo(n) {
+    [1,2,3,4].forEach(i => {
+      document.getElementById('view-' + i).classList.toggle('active', i === n);
+      document.getElementById('pill-' + i).classList.toggle('active', i === n);
+    });
+    document.querySelector('.screen-scroll').scrollTop = 0;
+  }
+
+  // ── Set live timestamp on verified screen ──
+  function setTime() {
+    const now = new Date();
+    const h = now.getHours().toString().padStart(2,'0');
+    const m = now.getMinutes().toString().padStart(2,'0');
+    document.getElementById('txn-time').textContent = h + ':' + m + ' · Today';
+  }
+
+  // ── NFC Logic ──
+  async function startNFC() {
+    const btn    = document.getElementById('nfc-btn');
+    const msg    = document.getElementById('nfc-msg');
+    const dot    = document.getElementById('nfc-dot');
+    const status = document.getElementById('nfc-status-text');
+
+    // Not supported (iOS, non-Chrome, desktop)
+    if (!('NDEFReader' in window)) {
+      msg.style.color = '#D17A00';
+      msg.textContent = 'Web NFC requires Chrome on Android. Use the nav below to preview the flow.';
+      return;
+    }
+
+    try {
+      btn.disabled = true;
+      btn.textContent = 'Waiting for card…';
+
+      const ndef = new NDEFReader();
+      await ndef.scan();
+
+      status.textContent = 'NFC active · Hold card to back of phone…';
+      msg.style.color = 'var(--text-secondary)';
+      msg.textContent = 'Keep the card flat and still for 1–2 seconds.';
+
+      ndef.addEventListener('reading', ({ serialNumber }) => {
+        dot.classList.remove('waiting');
+        dot.classList.add('detected');
+        status.textContent = 'Card detected!';
+        msg.textContent = '';
+        console.log('NFC serial:', serialNumber);
+        // Short delay so the user sees the "detected" state before advancing
+        setTimeout(() => {
+          setTime();
+          goTo(4);
+          resetNFC();
+        }, 800);
+      });
+
+      ndef.addEventListener('readingerror', () => {
+        dot.classList.remove('waiting');
+        dot.classList.add('error');
+        status.textContent = 'Read failed — try again';
+        msg.style.color = '#e53935';
+        msg.textContent = 'Hold the card flat and still for longer.';
+        resetNFC();
+      });
+
+    } catch (err) {
+      dot.classList.remove('waiting');
+      dot.classList.add('error');
+
+      if (err.name === 'NotAllowedError') {
+        msg.style.color = '#e53935';
+        msg.textContent = 'NFC permission denied. Please allow NFC access and try again.';
+      } else {
+        msg.style.color = '#e53935';
+        msg.textContent = 'NFC error: ' + err.message;
+      }
+      resetNFC();
+    }
+  }
+
+  function resetNFC() {
+    const btn    = document.getElementById('nfc-btn');
+    const dot    = document.getElementById('nfc-dot');
+    const status = document.getElementById('nfc-status-text');
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg> Start NFC scan`;
+      dot.className = 'nfc-dot waiting';
+      status.textContent = 'NFC reader active · Waiting for card…';
+    }, 2000);
+  }
+</script>
+</body>
+</html>
